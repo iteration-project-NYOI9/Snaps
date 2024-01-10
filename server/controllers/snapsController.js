@@ -2,17 +2,6 @@ const db = require('../models/snapsModel');
 
 const snapsController = {};
 
-snapsController.seeSnaps = async(req, res, next) => {
-  try {
-    const getAllQuery = `SELECT * FROM users LEFT OUTER JOIN snaps ON users.id = snaps.user_id WHERE snaps.user_id = $1;`;
-    const allSnaps = await db.query(getAllQuery, []);
-    res.locals.allSnaps = allSnaps.rows;
-    return next();
-  } catch {
-    return next('error in seeing snaps');
-  }
-}
-
 snapsController.addSnap = async(req, res, next) => {
 
   try {
@@ -26,7 +15,10 @@ snapsController.addSnap = async(req, res, next) => {
       text: `SELECT * FROM users LEFT OUTER JOIN snaps ON users.id = snaps.user_id WHERE snaps.user_id = $1;`,
       values: [req.body.user_id],
     };
+
     const allSnaps = await db.query(getAllQuery);
+
+    // MH - This gets sent back to the SnapsContainer and is dispatched to the setSnapsList reducer
     res.locals.allSnaps = allSnaps.rows;
     return next();
   } catch {

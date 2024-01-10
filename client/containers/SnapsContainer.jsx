@@ -4,7 +4,9 @@ import Snap from "../components/Snap.jsx";
 import { setSnapsList } from "../redux/snapsSlice.js";
 
 const SnapsContainer = () => {
+  // MH - useSelector is how we connect react to redux. It allows us to access whatever piece of state we desire. In this case, our snapsList
   const snapsList = useSelector((state) => state.snaps.snapsList);
+  // MH - useDispatch is how we connect react to redux specifically to invoke/dispatch redux actions
   const dispatch = useDispatch();
 
   console.log(" SNAPS LIST FROM STATE ", snapsList);
@@ -69,10 +71,15 @@ const SnapsContainer = () => {
           }),
         }
       );
+
+
       const content = await rawResponse.json();
       const summary = content.choices[0].message.content.toString();
       const userUrlInput = document.getElementById("urlInput").value;
       const userTitleInput = document.getElementById("titleInput").value;
+
+
+      console.log("snapsList before post call ", snapsList);
       fetch("/my-snaps", {
         method: "POST",
         headers: {
@@ -89,6 +96,9 @@ const SnapsContainer = () => {
         .then((res) => {
           document.getElementById("urlInput").value = "";
           document.getElementById("titleInput").value = "";
+          console.log("dispatching setSnapsList ", res);
+
+          // MH - 'res' is the .rows param of the SELECT query on the Snaps table and is dispatched AS THE PAYLOAD here to the setSnapsList reducer
           dispatch(setSnapsList(res));
         })
         .catch(() => {
