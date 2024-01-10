@@ -21,15 +21,12 @@ const SnapsContainer = () => {
     snapsComponentList.push(
       <Snap
         key={snapsList[i].snap_id}
-        snap_text={snapsList[i].snap_text}
+        snap_text={snapsList[i].snap}
         title={snapsList[i].title}
         url={snapsList[i].url}
       />
     );
   }
-  const testAdd = (e) => {
-    console.log(process.env.REACT_APP_OPENAI_KEY);
-  };
 
   const handleAdd = (e) => {
     // Query OpenAI API
@@ -76,14 +73,13 @@ const SnapsContainer = () => {
       const summary = content.choices[0].message.content.toString();
       const userUrlInput = document.getElementById("urlInput").value;
       const userTitleInput = document.getElementById("titleInput").value;
-      console.log("snapsList before post call ", snapsList);
       fetch("/my-snaps", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_id: snapsList[0].user_id,
+          user_id: 1, //hardcoded this to one because in circumstances where the user doesnt yet have any snaps, they cant upload new ones. will have to find a way to fix
           title: userTitleInput,
           url: userUrlInput,
           snap_text: summary,
@@ -93,7 +89,6 @@ const SnapsContainer = () => {
         .then((res) => {
           document.getElementById("urlInput").value = "";
           document.getElementById("titleInput").value = "";
-          console.log("dispatching setSnapsList ", res);
           dispatch(setSnapsList(res));
         })
         .catch(() => {
