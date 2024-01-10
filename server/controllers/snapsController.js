@@ -32,3 +32,5 @@ snapsController.addSnap = async(req, res, next) => {
 }
 
 module.exports = snapsController;
+
+module.exports = snapsController;
